@@ -8,43 +8,54 @@
 
 #import "CalculatorViewController.h"
 
+@interface CalculatorViewController()
+- (void)initComponents;
+- (void)releaseComponents;
+@property (retain) CalculatorBrain *brain;
+@end
+
+
 @implementation CalculatorViewController
 
-- (CalculatorBrain *)brain 
+@synthesize brain;
+
+- (void)initComponents
 {
-    if (!brain) brain = [[CalculatorBrain alloc] init];
-    return brain;
+    brain = [[CalculatorBrain alloc] init];
+}
+
+- (void)releaseComponents
+{
+    brain = nil;
 }
 
 - (IBAction)digitPressed:(UIButton *)sender
 {
-    NSString *digitString = [[sender titleLabel] text];
+    NSString *digitString = [sender.titleLabel text];
     if (isTypingNumber) {
         // Append the number to whatever's in the display
-        [display setText:[[display text] stringByAppendingString:digitString]];
+        display.text = [display.text stringByAppendingString:digitString];
     } else {
         [display setText:digitString];
         isTypingNumber = YES;
     }
-     
 }
 
 - (IBAction)operationPressed:(UIButton *)sender 
 {
     if (isTypingNumber) {
         // Update the operand to the number the the user has currently typed so far
-        [[self brain] setOperand:[[display text] doubleValue]];
+        [brain setOperand:[display.text doubleValue]];
         isTypingNumber = NO;
     }
     NSString *operation = [[sender titleLabel] text];
-    double result = [[self brain] performOperation:operation];
+    double result = [brain performOperation:operation];
     [display setText:[NSString stringWithFormat:@"%g", result]];
 }
 
-
 - (void)dealloc
 {
-    [brain release];
+    [self initComponents];
     [super dealloc];
 }
 
@@ -58,19 +69,22 @@
 
 #pragma mark - View lifecycle
 
-/*
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
+    // Initialize the brain
+    [self initComponents];
     [super viewDidLoad];
 }
-*/
+
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [self releaseComponents];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

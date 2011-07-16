@@ -9,21 +9,29 @@
 
 #import "CalculatorBrain.h"
 
+@interface CalculatorBrain()
+
+@property (retain) NSString *waitingOperation;
+@end
 
 @implementation CalculatorBrain
+
+// When we synthesize @property (retain) waitingOperation, we 
+// will release any memory associated with it when we set a new value
+@synthesize waitingOperation;
 
 - (void)setOperand:(double)aDouble {
     operand = aDouble;
 }
 
 - (void)performWaitingOperation {
-    if ([@"+" isEqual:waitingOperation]) {
+    if ([@"+" isEqual:self.waitingOperation]) {
         operand = waitingOperand + operand;
-    } else if ([@"-" isEqual:waitingOperation]) {
+    } else if ([@"-" isEqual:self.waitingOperation]) {
         operand = waitingOperand - operand;
-    } else if ([@"*" isEqual:waitingOperation]) {
+    } else if ([@"*" isEqual:self.waitingOperation]) {
         operand = waitingOperand * operand;
-    } else if ([@"/" isEqual:waitingOperation]) {
+    } else if ([@"/" isEqual:self.waitingOperation]) {
         if (operand) {
             operand = waitingOperand / operand;            
         }
@@ -37,10 +45,17 @@
         operand = -operand;
     } else {
         [self performWaitingOperation];
-        waitingOperation = operation;
+        self.waitingOperation = operation;
         waitingOperand = operand;
     }
     return operand;
 }
+
+- (void)dealloc
+{
+    self.waitingOperation = nil;
+    [super dealloc];
+}
+
 
 @end
