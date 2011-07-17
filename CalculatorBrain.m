@@ -93,6 +93,18 @@
     }
 }
 
+- (double)solveExpression
+{
+    double retVal = [CalculatorBrain evaluateExpression:self.expression 
+                                    usingVariableValues:nil];
+    return retVal;
+}
+
+
++ (BOOL)isVariableString:(NSString *)tokenString
+{
+    return [tokenString hasPrefix:VARIABLE_PREFIX];
+}
 
 + (double)evaluateExpression:(id)anExpression
          usingVariableValues:(NSDictionary *)variables 
@@ -100,12 +112,16 @@
     CalculatorBrain *brain = [[CalculatorBrain alloc] initWithBlankExpressions];
     NSArray *myExpression = (NSArray *)anExpression;
     for (id token in myExpression) {
-        if ([token class] == [NSString class]) {
+        if ([token isKindOfClass:[NSString class]]) {
             // This is an operator or variable
             NSString *tokenString = (NSString *)token;
-            if ([tokenString hasPrefix:VARIABLE_PREFIX]) {
-                [brain setVariableAsOperand:tokenString];
+            if ([self isVariableString:tokenString]) {
+                // This is a variable, so get the value from the map
+                // and set it as an operand
+                NSNumber *variableValue = [variables objectForKey:tokenString];
+                [brain setOperand:[variableValue doubleValue]];
             } else {
+                // This is an operator, so perform the operation on the brain
                 [brain performOperation:tokenString];
             }
         } else if ([token isKindOfClass:[NSNumber class]]){

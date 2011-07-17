@@ -54,6 +54,12 @@
     [display setText:[NSString stringWithFormat:@"%g", result]];
 }
 
+- (IBAction)solveExpression:(id)sender 
+{
+    double result = [brain solveExpression];
+    solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+}
+
 - (void)dealloc
 {
     [self initComponents];
