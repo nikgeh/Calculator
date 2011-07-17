@@ -16,12 +16,13 @@
 
 
 @implementation CalculatorViewController
-
 @synthesize brain;
 
 - (void)initComponents
 {
+    CalculatorBrain *calcBrain = [[CalculatorBrain alloc] init];
     brain = [[CalculatorBrain alloc] init];
+    [calcBrain release];
 }
 
 - (void)releaseComponents

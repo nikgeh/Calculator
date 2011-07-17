@@ -10,6 +10,7 @@
 #import "CalculatorBrain.h"
 
 @interface CalculatorViewController : UIViewController {
+    CalculatorBrain *brain;
     IBOutlet UILabel *display;
     BOOL isTypingNumber;
 }
