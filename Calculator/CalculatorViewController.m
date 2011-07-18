@@ -54,30 +54,49 @@
     [display setText:[NSString stringWithFormat:@"%g", result]];
 }
 
+/**
+ Performs a series of self tests on the Calculator Brain.
+ TODO: Move this to a unit test?
+ */
 - (void)selfTest
 {
     NSString *x = @"x";
+    NSString *y = @"y";
     
     CalculatorBrain *myBrain = [[CalculatorBrain alloc] init];
+    // 4+x+15*x*36+y+43
     [myBrain setOperand:4];
     [myBrain performOperation:@"+"];
-    [myBrain setOperand:15];
-    [myBrain performOperation:@"+"];
     [myBrain setVariableAsOperand:x];
+    [myBrain performOperation:@"+"];
+    [myBrain setOperand:15];
+    [myBrain performOperation:@"*"];
+    [myBrain setVariableAsOperand:x];
+    [myBrain performOperation:@"*"];
+    [myBrain setOperand:36];
+    [myBrain performOperation:@"+"];
+    [myBrain setVariableAsOperand:y];
+    [myBrain performOperation:@"+"];
+    [myBrain setOperand:43];
     [myBrain performOperation:@"="];
     
     NSMutableDictionary *expressionsDict = [[NSMutableDictionary alloc] init];
-    [expressionsDict setValue:[NSNumber numberWithInt:10] forKey:x];
+    [expressionsDict setValue:[NSNumber numberWithInt:17] forKey:x];
+    [expressionsDict setValue:[NSNumber numberWithDouble:35.781] forKey:y];
     
     // Test that the set is correct
     NSSet *varSet = [CalculatorBrain variablesInExpression:myBrain.expression];
-    assert([varSet count] == 1);
-    //assert([varSet containsObject:x]);
+    assert([varSet count] == 2);
+    //for (NSString *var in varSet) {
+    //    NSLog(@"******* %@", var);
+    //}
+    assert([varSet member:x]);
+    assert([varSet member:y]);
     
     double result = [CalculatorBrain evaluateExpression:myBrain.expression 
                                     usingVariableValues:expressionsDict];
     solvedExpression.text = [NSString stringWithFormat:@"%g", result];
-    [expressionsDict release];    
+    [expressionsDict release];
     [myBrain release];
 }
 

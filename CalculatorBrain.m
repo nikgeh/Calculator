@@ -103,9 +103,9 @@
 }
 
 // Strips out the VARIABLE_PREFIX from the token to return the variable value
-+ (BOOL)getVariableFromVariableString:(NSString *)tokenString
++ (NSString *)getVariableFromVariableString:(NSString *)tokenString
 {
-    return [tokenString hasPrefix:VARIABLE_PREFIX];
+    return [tokenString substringFromIndex:[VARIABLE_PREFIX length]];
 }
 
 
@@ -118,17 +118,19 @@
         if ([token isKindOfClass:[NSString class]]) {
             // This is an operator or variable
             NSString *tokenString = (NSString *)token;
+            
             if ([self isVariableString:tokenString]) {
                 // This is a variable, so get the value from the map
                 // and set it as an operand
                 NSString *variableString = 
-                        [tokenString substringFromIndex:[VARIABLE_PREFIX length]];
+                        [self getVariableFromVariableString:tokenString];
                 NSNumber *variableValue = [variables objectForKey:variableString];
                 [brain setOperand:[variableValue doubleValue]];
             } else {
                 // This is an operator, so perform the operation on the brain
                 [brain performOperation:tokenString];
             }
+            
         } else if ([token isKindOfClass:[NSNumber class]]){
             // This is an operand
             [brain setOperand:[((NSNumber *)token) doubleValue]];
@@ -154,7 +156,7 @@
             NSString *tokenString = (NSString *)token;
             if ([self isVariableString:tokenString]) {
                 // It's a variable, add it to the set
-                [variables addObject:tokenString];
+                [variables addObject:[self getVariableFromVariableString:tokenString]];
             }
         }
     }
