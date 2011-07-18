@@ -57,6 +57,7 @@
 /**
  Performs a series of self tests on the Calculator Brain.
  TODO: Move this to a unit test?
+ http://denizdemir.com/2011/03/24/ios-unit-testing-with-xcode-4-and-core-data/
  */
 - (void)selfTest
 {
