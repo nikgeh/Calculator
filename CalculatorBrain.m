@@ -172,8 +172,27 @@
 
 + (NSString *)descriptionOfExpression:(id)anExpression 
 {
-    // TODO
-    return nil;
+    NSMutableArray *sb = [[NSMutableArray alloc] init];
+    for (id token in anExpression) {
+        if ([token isKindOfClass:[NSString class]]) {
+            // This is an operator or variable
+            NSString *tokenString = (NSString *)token;
+            
+            if ([self isVariableString:tokenString]) {
+                tokenString = [self getVariableFromVariableString:tokenString];
+            } 
+            [sb addObject:tokenString];
+        } else if ([token isKindOfClass:[NSNumber class]]) {
+            NSNumber *operand = (NSNumber *)token;
+            [sb addObject:[operand stringValue]];
+        } else {
+            // What do we do here? Throw something?
+        }
+    }
+    
+    NSString *descriptionString = [sb componentsJoinedByString:@" "];
+    [sb release];
+    return descriptionString;
 }
 
 + (id)propertyListForExpression:(id)anExpression

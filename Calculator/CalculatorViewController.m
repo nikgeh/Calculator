@@ -93,9 +93,10 @@
     assert([varSet member:x]);
     assert([varSet member:y]);
     
+    NSString *expression = [CalculatorBrain descriptionOfExpression:myBrain.expression];
     double result = [CalculatorBrain evaluateExpression:myBrain.expression 
                                     usingVariableValues:expressionsDict];
-    solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+    solvedExpression.text = [NSString stringWithFormat:@"%@ = %g", expression, result];
     [expressionsDict release];
     [myBrain release];
 }
