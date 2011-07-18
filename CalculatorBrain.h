@@ -21,9 +21,6 @@
 - (double)performOperation:(NSString *)operation;
 - (void)setVariableAsOperand:(NSString *)variable;
 
-- (double)solveExpression;
-
-
 @property (readonly) id expression;
 
 + (double)evaluateExpression:(id)anExpression

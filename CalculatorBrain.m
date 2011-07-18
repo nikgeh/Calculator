@@ -42,7 +42,9 @@
 }
 
 
-// Returns the expression @property
+/**
+ @return the expression @property
+ */
 - (id)expression 
 {
     NSMutableArray *copyOfArray = [expressionArray copy];
@@ -60,7 +62,7 @@
 
 - (void)setVariableAsOperand:(NSString *)variable 
 {
-    [expressionArray addObject:[NSString stringWithFormat:@"%s%s", VARIABLE_PREFIX, variable]];
+    [expressionArray addObject:[NSString stringWithFormat:@"%@%@", VARIABLE_PREFIX, variable]];
 }
 
 - (double)performOperation:(NSString *)operation 
@@ -93,18 +95,19 @@
     }
 }
 
-- (double)solveExpression
+// Whether the token is a variable string
++ (BOOL)isVariableString:(NSString *)tokenString
 {
-    double retVal = [CalculatorBrain evaluateExpression:self.expression 
-                                    usingVariableValues:nil];
-    return retVal;
+    return [tokenString hasPrefix:VARIABLE_PREFIX] && 
+        [tokenString length] > [VARIABLE_PREFIX length];
 }
 
-
-+ (BOOL)isVariableString:(NSString *)tokenString
+// Strips out the VARIABLE_PREFIX from the token to return the variable value
++ (BOOL)getVariableFromVariableString:(NSString *)tokenString
 {
     return [tokenString hasPrefix:VARIABLE_PREFIX];
 }
+
 
 + (double)evaluateExpression:(id)anExpression
          usingVariableValues:(NSDictionary *)variables 
@@ -118,7 +121,9 @@
             if ([self isVariableString:tokenString]) {
                 // This is a variable, so get the value from the map
                 // and set it as an operand
-                NSNumber *variableValue = [variables objectForKey:tokenString];
+                NSString *variableString = 
+                        [tokenString substringFromIndex:[VARIABLE_PREFIX length]];
+                NSNumber *variableValue = [variables objectForKey:variableString];
                 [brain setOperand:[variableValue doubleValue]];
             } else {
                 // This is an operator, so perform the operation on the brain
@@ -136,10 +141,31 @@
     return retVal;
 }
 
+// Returns a set of the variables in the given expression
+// or null if there are no variables
 + (NSSet *)variablesInExpression:(id)anExpression
 {
-    // TODO
-    return nil;
+    NSMutableSet *variables = [[NSMutableSet alloc] init];
+
+    NSArray *myExpression = (NSArray *)anExpression;
+    for (id token in myExpression) {
+        if ([token isKindOfClass:[NSString class]]) {
+            // This is an operator or variable
+            NSString *tokenString = (NSString *)token;
+            if ([self isVariableString:tokenString]) {
+                // It's a variable, add it to the set
+                [variables addObject:tokenString];
+            }
+        }
+    }
+    
+    // Create an immutable set and return it
+    // We could return the mutable set, but just to be complete...
+    NSSet *immutableVariables = [variables count] == 0 ? 
+                                nil : [[NSSet alloc] initWithSet:variables];    
+    [variables release];
+    [immutableVariables autorelease];
+    return immutableVariables;
 }
 
 + (NSString *)descriptionOfExpression:(id)anExpression 

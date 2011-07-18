@@ -54,10 +54,38 @@
     [display setText:[NSString stringWithFormat:@"%g", result]];
 }
 
+- (void)selfTest
+{
+    NSString *x = @"x";
+    
+    CalculatorBrain *myBrain = [[CalculatorBrain alloc] init];
+    [myBrain setOperand:4];
+    [myBrain performOperation:@"+"];
+    [myBrain setOperand:15];
+    [myBrain performOperation:@"+"];
+    [myBrain setVariableAsOperand:x];
+    [myBrain performOperation:@"="];
+    
+    NSMutableDictionary *expressionsDict = [[NSMutableDictionary alloc] init];
+    [expressionsDict setValue:[NSNumber numberWithInt:10] forKey:x];
+    
+    // Test that the set is correct
+    NSSet *varSet = [CalculatorBrain variablesInExpression:myBrain.expression];
+    assert([varSet count] == 1);
+    //assert([varSet containsObject:x]);
+    
+    double result = [CalculatorBrain evaluateExpression:myBrain.expression 
+                                    usingVariableValues:expressionsDict];
+    solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+    [expressionsDict release];    
+    [myBrain release];
+}
+
 - (IBAction)solveExpression:(id)sender 
 {
-    double result = [brain solveExpression];
-    solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+    //double result = [brain solveExpression];
+    //solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+    [self selfTest];
 }
 
 - (void)dealloc
