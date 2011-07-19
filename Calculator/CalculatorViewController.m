@@ -70,12 +70,36 @@
     [self updateDisplayWithExpression];
 }
 
+- (IBAction)clearPressed:(UIButton *)sender
+{
+    [brain clearCalculator];
+    isTypingNumber = NO;
+    display.text = @"0";
+}
 
-// TODO remove this
+
 - (IBAction)solveExpression:(id)sender 
 {
-    //double result = [brain solveExpression];
-    //solvedExpression.text = [NSString stringWithFormat:@"%g", result];
+    NSString *expression = [CalculatorBrain descriptionOfExpression:brain.expression];
+    NSMutableString *sb = [[NSMutableString alloc] initWithString:expression];
+    if (![expression hasSuffix:@"="]) {
+        [sb appendString:@"="];
+    }
+    [sb appendString:@" "];
+
+    // Create fake dictionary
+    NSMutableDictionary *expressionsDict = [[NSMutableDictionary alloc] init];
+    [expressionsDict setValue:[NSNumber numberWithInt:17] forKey:@"x"];
+    [expressionsDict setValue:[NSNumber numberWithDouble:35.781] forKey:@"y"];
+    [expressionsDict setValue:[NSNumber numberWithDouble:14] forKey:@"z"];
+    
+    double result = [CalculatorBrain evaluateExpression:brain.expression
+                                    usingVariableValues:expressionsDict];
+    [expressionsDict release];
+
+    [sb appendString:[NSString stringWithFormat:@"%g", result]];
+    display.text = sb;
+    [sb release];
 }
 
 - (void)dealloc

@@ -12,13 +12,13 @@
 @interface CalculatorViewController : UIViewController {
     CalculatorBrain *brain;
     IBOutlet UILabel *display;
-    IBOutlet UILabel *solvedExpression;
     BOOL isTypingNumber;
 }
 
 - (IBAction)digitPressed:(UIButton *)sender;
 - (IBAction)operationPressed:(UIButton *)sender;
 - (IBAction)variablePressed:(UIButton *)sender;
+- (IBAction)clearPressed:(UIButton *)sender;
 - (IBAction)solveExpression:(id)sender;
 
 @end

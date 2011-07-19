@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+#define CLEAR_BUTTON @"C"
 
 @interface CalculatorBrain : NSObject {
     @private
@@ -20,6 +21,8 @@
 - (void)setOperand:(double)aDouble;
 - (double)performOperation:(NSString *)operation;
 - (void)setVariableAsOperand:(NSString *)variable;
+- (void)clearCalculator;
+
 
 @property (readonly) id expression;
 

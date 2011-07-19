@@ -23,11 +23,20 @@
 // will release any memory associated with it when we set a new value
 @synthesize waitingOperation;
 
+- (void)resetElements
+{
+    [expressionArray release];
+    self.waitingOperation = nil;
+    operand = 0;
+    waitingOperand = 0;
+    expressionArray = [[NSMutableArray alloc] initWithObjects:nil];        
+}
+
 - (id)init
 {
     self = [super init];
     if (self) {
-        expressionArray = [[NSMutableArray alloc] initWithObjects:nil];        
+        [self resetElements];
     }
     return self;
 }
@@ -93,6 +102,11 @@
             operand = waitingOperand / operand;            
         }
     }
+}
+
+- (void)clearCalculator
+{
+    [self resetElements];
 }
 
 // Whether the token is a variable string
