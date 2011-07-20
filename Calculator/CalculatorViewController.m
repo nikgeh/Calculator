@@ -30,11 +30,25 @@
     brain = nil;
 }
 
+- (void)updateDisplayWithResult:(NSDictionary *)variableValues
+{
+    display.text = [NSString stringWithFormat:@"%g",
+                    [CalculatorBrain evaluateExpression:brain.expression
+                                    usingVariableValues:nil]];     
+}
+
+/**
+ Updates the display with the value of the evaluated expression
+ */
 - (void)updateDisplayWithExpression
 {
-    NSString *expression = [CalculatorBrain descriptionOfExpression:brain.expression];
-    display.text = expression;
+    if ([CalculatorBrain variablesInExpression:brain.expression]) {
+        display.text = [CalculatorBrain descriptionOfExpression:brain.expression];
+    } else {
+        [self updateDisplayWithResult:nil];
+    }
 }
+
 
 - (IBAction)digitPressed:(UIButton *)sender
 {

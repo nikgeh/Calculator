@@ -61,17 +61,21 @@
     return copyOfArray;
 }
 
+- (void)addTermToExpression:(id)term
+{
+    [expressionArray addObject:term];
+}
 
 - (void)setOperand:(double)aDouble 
 {
     operand = aDouble;
     NSNumber *newOperand = [NSNumber numberWithDouble:aDouble];
-    [expressionArray addObject:newOperand];
+    [self addTermToExpression:newOperand];
 }
 
 - (void)setVariableAsOperand:(NSString *)variable 
 {
-    [expressionArray addObject:[NSString stringWithFormat:@"%@%@", VARIABLE_PREFIX, variable]];
+    [self addTermToExpression:[NSString stringWithFormat:@"%@%@", VARIABLE_PREFIX, variable]];
 }
 
 - (double)performOperation:(NSString *)operation 
@@ -80,12 +84,16 @@
         operand = sqrt(operand);
     } else if ([@"+/-" isEqual:operation]) {
         operand = -operand;
+    } else if ([@"sin" isEqual:operation]) {
+        operand = sin(operand);
+    } else if ([@"cos" isEqual:operation]) {
+        operand = cos(operand);
     } else {
         [self performWaitingOperation];
         self.waitingOperation = operation;
         waitingOperand = operand;
     }
-    [expressionArray addObject:operation];
+    [self addTermToExpression:operation];
     return operand;
 }
 
